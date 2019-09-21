@@ -105,7 +105,7 @@ module.exports = (filePath, { mode, editor, language }) => {
             if (config.outputPath && !fs.existsSync(config.outputPath)) fs.mkdirSync(config.outputPath);
 
             // TODO we could use npm library front-mater to read the title of the exercises from the README.md
-            config.exercises = getDirectories(exercisesPath).map(ex => ({ slug: ex.substring(ex.indexOf('exercises/')+10), title: ex.substring(ex.indexOf('exercises/')+10), path: ex}));
+            config.exercises = getDirectories(exercisesPath).map(ex => ({ slug: ex.substring(ex.indexOf('exercises/')+10), title: ex.substring(ex.indexOf('exercises/')+10), path: ex, completedAt: null, status:'pending'}));
             config.exercises.forEach(d => {
                 if(!validateExerciseDirectoryName(d.slug)){
                     Console.error('Exercise directory "'+d.slug+'" has an invalid name, it has to start with two digits followed by words separated by underscors or hyphen (no white spaces). e.g: 01.12-hello-world');
@@ -117,6 +117,16 @@ module.exports = (filePath, { mode, editor, language }) => {
             return {
                 write: (callback) => fs.writeFile(confPath, JSON.stringify(config, null, 4), callback)
             };
-        }
-    };
+        },
+      
+        updateExcerciseStatus(slug,status) = > {
+          
+            let today = new Date();
+            config.exercises = config.exercises.map(exercise => {
+              if(exercise.slug === slug){
+                foundExercise.status = status
+                foundExercise.completedAt: today;
+              }
+            });
+      };
 };
